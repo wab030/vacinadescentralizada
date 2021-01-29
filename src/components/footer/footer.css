@@ -1,0 +1,15 @@
+.Footer{
+    background-color: red;
+}
+
+.Footer .production{
+    background-color: red;
+}
+
+.Footer .information{
+    background-color: red;
+}
+
+.Footer a {
+    color: black;
+}
