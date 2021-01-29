@@ -6,6 +6,8 @@ import Image from '../src/components/image/image';
 import Title from '../src/components/title/title';
 import Supporters from '../src/components/supporters/supporters';
 import PrivacyPolicy from '../src/components/privacypolicy/privacypolicy';
+import Share from '../src/components/share/share';
+import HelmetMetaData from './components/helmet/helmet';
 import { db } from './firebase';
 import './App.css';
 
@@ -21,6 +23,7 @@ function App() {
     neighborhood: '',
     comment: ''
   });
+  const [supporterSigned, setSupporterSigned] = useState(false);
 
   useEffect(() => {
     console.log("[App useEffect]");
@@ -118,6 +121,7 @@ function App() {
           db.collection(collectionName).doc(email).set(newSupporter)
             .then(function (docRef) {
               alert("Obrigado por assinar !!!");
+              setSupporterSigned(true);
               let newSupporters = [
                 ...supporters,
                 newSupporter
@@ -150,6 +154,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* <HelmetMetaData image={'https://ceciliopt.com.br/seringa.png'}/> */}
       <div className="container-fluid principal">
         <div className='row'>
           <Image />
@@ -179,16 +184,23 @@ function App() {
             </h4>
           </div>
           <div className="col-md-4" >
-            <Form
-              supportersCount={supporters.length}
-              handleSubmit={storeSupporter}
-              handleChanges={handleChanges}
-              handleBlur={handleBlur}
-              formValues={formValues}
-              formErrors={errors}
-              formTouched={touched}
-            />
-            <PrivacyPolicy />
+            {supporterSigned
+              ?
+              <Share />
+              :
+              <div>
+                <Form
+                  supportersCount={supporters.length}
+                  handleSubmit={storeSupporter}
+                  handleChanges={handleChanges}
+                  handleBlur={handleBlur}
+                  formValues={formValues}
+                  formErrors={errors}
+                  formTouched={touched}
+                />
+                <PrivacyPolicy />
+              </div>
+            }
             <Supporters supporters={supporters} />
           </div>
         </div>
