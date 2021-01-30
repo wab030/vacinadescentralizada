@@ -7,12 +7,11 @@ import Title from '../src/components/title/title';
 import Supporters from '../src/components/supporters/supporters';
 import PrivacyPolicy from '../src/components/privacypolicy/privacypolicy';
 import Share from '../src/components/share/share';
-import HelmetMetaData from './components/helmet/helmet';
 import { db } from './firebase';
 import './App.css';
+import { formatName, formatEmail} from './utils/commonfunctions';
 
 function App() {
-  const collectionName = 'supporters';
   const [supporters, setSupporters] = useState([]);
   const [errors, setErrors] = useState({});
   const [touched, setTouchedFields] = useState({});
@@ -20,13 +19,15 @@ function App() {
     name: '',
     surname: '',
     email: '',
+    phone: '',
     neighborhood: '',
-    comment: ''
+    comment: '',
+    publicSign: true
   });
   const [supporterSigned, setSupporterSigned] = useState(false);
+  let collectionName = 'supporters';
 
   useEffect(() => {
-    console.log("[App useEffect]");
     let supportersAux = [];
     db.collection(collectionName)
       .get()
@@ -36,15 +37,27 @@ function App() {
         });
         setSupporters(supportersAux);
       })
-  }, []);
+  }, [collectionName]);
 
   const handleChanges = (event) => {
-    // console.log("[Handle Changes]");
     const fieldName = event.target.getAttribute('id');
-    const newFormValues = {
-      ...formValues,
-      [fieldName]: event.target.value
-    };
+    let newFormValues;
+    if (event.target.type === "checkbox") {
+      let publicSign = (event.target.value === 'true');
+      // console.log("Status:", status);
+      // console.log("!Status:", !status);
+      // console.log("[Entrei no if do check] value = ", event.target.value);
+      newFormValues = {
+        ...formValues,
+        [fieldName]: !publicSign
+      };
+      console.log("New Form Values", newFormValues)
+    } else {
+      newFormValues = {
+        ...formValues,
+        [fieldName]: event.target.value
+      };
+    }
     setErrors(validate(newFormValues));
     setFormValues(newFormValues);
   }
@@ -56,7 +69,6 @@ function App() {
       [fieldName]: true
     }
     setTouchedFields(newTouched);
-    console.log(touched);
   }
 
   const validate = (values) => {
@@ -80,20 +92,22 @@ function App() {
   }
 
   const storeSupporter = (event) => {
-    console.log(event);
     event.preventDefault();
-    let name = event.target.name.value;
-    let surname = event.target.surname.value;
-    let email = event.target.email.value;
+    let name = formatName(event.target.name.value);
+    let surname = formatName(event.target.surname.value);
+    let email = formatEmail(event.target.email.value);
     let phone = event.target.phone.value;
-    let neighborhood = event.target.neighborhood.value;
+    let neighborhood = formatName(event.target.neighborhood.value);
     let comment = event.target.comment.value;
+    let publicSign = event.target.publicSign.value;
     setFormValues({
       name: '',
       surname: '',
       email: '',
+      phone: '',
       neighborhood: '',
-      comment: ''
+      comment: '',
+      publicSign: true
     });
 
     name = name.substring(0, 50);
@@ -101,51 +115,53 @@ function App() {
     comment = comment.substring(0, 300);
     if (name && email) {
       let docRef = db.collection(collectionName).doc(email);
-      docRef.get().then(function (doc) {
-        if (doc.exists) {
-          let newErrors = {
-            ...errors,
-            general: "Usuário já assinou o abaixo assinado."
-          }
-          setErrors(newErrors);
-        } else {
-          const newSupporter = {
-            name: name,
-            surname: surname,
-            email: email,
-            phone: phone,
-            neighborhood: neighborhood,
-            comment: comment,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          }
-          db.collection(collectionName).doc(email).set(newSupporter)
-            .then(function (docRef) {
-              alert("Obrigado por assinar !!!");
-              setSupporterSigned(true);
-              let newSupporters = [
-                ...supporters,
-                newSupporter
-              ]
-              setSupporters(newSupporters);
-              setFormValues({
-                name: '',
-                surname: '',
-                email: '',
-                neighborhood: '',
-                comment: ''
+      docRef.get()
+        .then(function (doc) {
+          if (doc.exists) {
+            let newErrors = {
+              ...errors,
+              general: "Usuário já assinou o abaixo assinado."
+            }
+            setErrors(newErrors);
+          } else {
+            const newSupporter = {
+              name: name,
+              surname: surname,
+              email: email,
+              phone: phone,
+              neighborhood: neighborhood,
+              comment: comment,
+              publicSign: publicSign === 'true' ? true : false,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }
+            db.collection(collectionName).doc(email).set(newSupporter)
+              .then(function (docRef) {
+                alert("Obrigado por assinar !!!");
+                setSupporterSigned(true);
+                let newSupporters = [
+                  ...supporters,
+                  newSupporter
+                ]
+                setSupporters(newSupporters);
+                setFormValues({
+                  name: '',
+                  surname: '',
+                  email: '',
+                  neighborhood: '',
+                  comment: ''
+                });
+              }).catch(function (error) {
+                console.error("Erro ao incluir o usuário: ", error);
+                let newErrors = {
+                  ...errors,
+                  general: "Erro ao incluir o usuário na base de dados."
+                }
+                setErrors(newErrors);
               });
-            }).catch(function (error) {
-              console.error("Erro ao incluir o usuário: ", error);
-              let newErrors = {
-                ...errors,
-                general: "Erro ao incluir o usuário na base de dados."
-              }
-              setErrors(newErrors);
-            });
-        }
-      }).catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+          }
+        }).catch(function (error) {
+          console.log("Error getting document:", error);
+        });
     } else {
       console.log("Os campos nome e e-mail são obrigatórios para prosseguir.");
       alert("Por favor preencha os dois campos antes de clicar no botão enviar.");

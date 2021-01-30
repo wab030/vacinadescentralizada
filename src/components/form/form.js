@@ -9,7 +9,7 @@ const form = ({ handleSubmit, handleChanges, handleBlur, supportersCount, formVa
             <h1 className="text-center">
                 <span className="badge badge-warning" id="contador">{supportersCount}</span>
             </h1>
-            <p className="text-center">pessoas já assinaram pela vacinação nos cs</p>
+            <p className="text-center">pessoas já assinaram.</p>
             <form onSubmit={handleSubmit}>
                 <div className="form-group mb-2">
                     <input type="text" className="form-control" id="name" placeholder="Nome"
@@ -60,8 +60,18 @@ const form = ({ handleSubmit, handleChanges, handleBlur, supportersCount, formVa
                         onBlur={handleBlur}
                     />
                 </div>
+                <div className="form-check">
+                    <input className="form-check-input" type="checkbox"
+                        id="publicSign"
+                        value={formValues.publicSign}
+                        onChange={handleChanges}
+                        checked={formValues.publicSign} />
+                        Deixar minha assinatura pública.
+                </div>
                 {formErrors.general && <p className="error">{formErrors.general}</p>}
-                <input type="submit" value="Enviar" className="btn btn-warning" />
+                <div className="form-group text-center">
+                    <input type="submit" value="Enviar" className="btn btn-warning" />
+                </div>
             </form>
             <br />
         </div>

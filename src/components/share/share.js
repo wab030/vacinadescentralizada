@@ -16,6 +16,7 @@ const share = () => {
             </FacebookShareButton>
             <WhatsappShareButton
                 className="m-2"
+                title={"Vacinas em todos os Centros de Saúde de Campinas! Assine."} 
                 url={"https://ceciliopt.com.br"}
                 quote={"Vacinas em todos os Centros de Saúde de Campinas!"}
                 hashtag="#descentralizavacina"

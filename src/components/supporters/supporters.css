@@ -3,6 +3,8 @@
     border-radius: .25rem;
     padding: 5px;
     box-shadow: 0 4px 4px -2px #989898;
+    overflow-y: scroll; 
+    height:300px;
 }
 
 .Supporters .Titulo{
