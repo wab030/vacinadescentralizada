@@ -1,0 +1,15 @@
+figure {
+  width: 30%;
+  min-width: 320px;
+  margin: 0 auto;
+}
+
+figcaption {
+  font: 120% sans-serif;
+  text-align: center;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}

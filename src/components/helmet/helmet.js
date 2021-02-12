@@ -2,7 +2,6 @@ import React from "react";
 import { Helmet } from "react-helmet";
 
 function HelmetMetaData(props) {
-    // let location = useLocation();
     let currentUrl = "https://ceciliopt.com.br";
     let quote = props.quote !== undefined ? props.quote : "";
     let title = props.title !== undefined ? props.title : "CampersTribe - World is yours to explore";

@@ -7,9 +7,13 @@ import Title from '../src/components/title/title';
 import Supporters from '../src/components/supporters/supporters';
 import PrivacyPolicy from '../src/components/privacypolicy/privacypolicy';
 import Share from '../src/components/share/share';
+import Video from './components/video/video';
 import { db } from './firebase';
 import './App.css';
 import { formatName, formatEmail} from './utils/commonfunctions';
+import video1 from './assets/videos/videoaglomeracaovacina.mp4'
+import video2 from './assets/videos/ceciliopedevacinacaodescentralizada.mp4'
+
 
 function App() {
   const [supporters, setSupporters] = useState([]);
@@ -172,8 +176,15 @@ function App() {
     <div className="App">
       {/* <HelmetMetaData image={'https://ceciliopt.com.br/seringa.png'}/> */}
       <div className="container-fluid principal">
-        <div className='row'>
+        {/* <div className='row'>
           <Image />
+        </div> */}
+        <div className="title">
+          Denúncia !!! Centro de Vacinação Lotado em Campinas<br />
+          Precisamos de mais postos de vacinação já!
+        </div>
+        <div className='row'>
+          <Video video={video1} videoTitle='11-Fev-2021 - Centro de Vacinação Lotado'/>
         </div>
         <div className="row bloco1">
           <div className="col-md-1"></div>
@@ -221,6 +232,9 @@ function App() {
           </div>
         </div>
         <br />
+        <div className='row'>
+          <Video video={video2} videoTitle='Cecílio pede a descentralização da vacinação.'/>
+        </div>
         <Footer />
       </div>
     </div >

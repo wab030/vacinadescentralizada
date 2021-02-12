@@ -2,6 +2,12 @@
 
 }
 
+.App .title{
+   color: red;
+   font-size: 30px;
+   text-align: center;
+}
+
 .App .bloco1{
   margin: 5px 0px 0px 0px;
 }
